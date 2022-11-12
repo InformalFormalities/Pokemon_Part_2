@@ -348,23 +348,48 @@ void battle_mode() {
 	//If user's pokemon's speed is higher or the dice rolled a 1, they go first.
 	if (userPokemon.speed > enemyPokemon.speed or diceRoll == 1) {
 		string userChoice;
+		int damageDealt = 0;
+		double stab = 0, typeMod = 0;
 		while (userPokemon.hp > 0 or enemyPokemon.hp > 0) {
-			cout << "Choose a move to use: " << endl << userMove1 << endl << userMove2 << userMove3 << userMove4;
+			//Give user choice of what move to attack with.
+			cout << "Choose a move for you to use: " << endl << userMove1 << endl << userMove2 << endl << userMove3 << endl << userMove4 << endl;
 			cin >> userChoice;
 
 			Pokemon userPower.power = 0;
 			if (userMoves.find(userChoice)) userPower.power = userMoves.find(userChoice);
 			//TODO: STAB AND TYPE MODIFIER
-			//if (something something STAB) ;
+			//if (userPokemon.type == userMoves.at(something.type)) stab = 1.5;
+			//else stab = 1.0;
 			//if (something something type_modifier) ;
+			
+			//Calculate damage dealt then substract that from enemy pokemon's health.
+			damageDealt = (userPower * userPokemon.attack) / (enemyPokemon.defense * /*STAB*/ * /*type_modifier*/);
+			enemyPokemon.hp -= damageDealt;
 
-			enemyPokemon.hp -= (userPower * userPokemon.attack) / (enemyPokemon.defense * /*STAB*/ * /*type_modifier*/);
+			cout << "You dealt " << damageDealt << " , resulting in " << enemyPokemon.name << "'s HP being " << enemyPokemon.hp << endl << endl;
+
+			//Give user choice of what move to attack with.
+			cout << "Choose a move for the enemy to use: " << endl << enemyMove1 << endl << enemyMove2 << endl << enemyMove3 << endl << enemyMove4 << endl;
+			cin >> userChoice;
+
+			Pokemon enemyPower.power = 0;
+			if (enemyMoves.find(userChoice)) enemyPower.power = enemyMoves.find(userChoice);
+			//TODO: STAB AND TYPE MODIFIER
+			//if (enemyPokemon.type == userMoves.at(something.type)) stab = 1.5;
+			//else stab = 1.0;
+			//if (something something type_modifier) ;
+			
+			//Calculate damage dealt then substract that from user pokemon's health.
+			damageDealt = (enemyPower * enemyPokemon.attack) / (userPokemon.defense * /*STAB*/ * /*type_modifier*/);
+			userPokemon.hp -= damageDealt;
+
+			cout << "The enemy dealt " << damageDealt << " , resulting in " << userPokemon.name << "'s HP being " << userPokemon.hp << endl; << endl;
 		}
 	}
 	//Else if the enemyPokemon speed is higher or the dice rolled a 0, they go first.
 	else if (enemyPokemon.speed > userPokemon.speed or diceRoll == 0) {
 		while (userPokemon.hp > 0 or enemyPokemon.hp > 0) {
-
+			//TODO: Copy and paste above once finished, and switch order so that enemy pokemon attacks first.
 		}
 	}
 
