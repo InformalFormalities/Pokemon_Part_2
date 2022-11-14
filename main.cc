@@ -9,6 +9,7 @@
 #include <vector>
 #include <sstream>
 #include <ctype.h>
+#include <map>
 using namespace std;
 
 void die(string s = "INVALID INPUT!") {
@@ -169,101 +170,316 @@ void battle_mode() {
 
 	//Gets user pokemon.
 	//Prompt user as long as they haven't given valid input.
-	while (!cin) {
+	bool asdf = true;
+	while (asdf) {
 		try {
-			cout << "Choose a pokemon to use name or index: ";
-			cin >> userTemp;
+			//FIXME: Throws before user types anything in (first time only).
+			cout << "Choose a pokemon by name or index to use: ";
+			getline(cin, userTemp);
+			for (const Pokemon &x : pokemon_db) {
+				if (isdigit(userTemp.at(0)) and stoi(userTemp) == x.index) {
+					asdf = false;
+					break;
+				} else if (userTemp == x.name) {
+					asdf = false;
+					break;
+				}
+			}
 		} catch (...) {
 			cout << "ERROR: Invalid name or index." << endl;
+			cin.clear();
 		}
 	}
 	//If they used an index, assign stats for their pokemon based off index.
 	if (isdigit(userTemp.at(0))) {
-		userTemp = stoi(userTemp);
-		userPokemon = pokemon_db.find(userTemp);
+		int intUserTemp = stoi(userTemp);
+		for (const Pokemon &x : pokemon_db) {
+			if (x.index == intUserTemp) {
+				userPokemon.index = x.index;
+				userPokemon.name = x.name;
+				userPokemon.hp = x.hp;
+				userPokemon.attack = x.attack;
+				userPokemon.defense = x.defense;
+				userPokemon.speed = x.speed;
+				userPokemon.special = x.special;
+				userPokemon.type1 = x.type1;
+				userPokemon.type2 = x.type2;
+			}
+		}
 	}
 	//Else if they used a name, assign stats for their pokemon based off name.
-	else userPokemon = pokemon_db.find(userTemp);
+	else {
+		for (const Pokemon &x : pokemon_db) {
+			if (x.name == userTemp) {
+				userPokemon.index = x.index;
+				userPokemon.name = x.name;
+				userPokemon.hp = x.hp;
+				userPokemon.attack = x.attack;
+				userPokemon.defense = x.defense;
+				userPokemon.speed = x.speed;
+				userPokemon.special = x.special;
+				userPokemon.type1 = x.type1;
+				userPokemon.type2 = x.type2;
+			}
+		}
+	}
 
 	//Gets moves for user's pokemon.
 	cout << "Choose up to 4 moves for your pokemon name or index (press Q when done):" << endl;
 	//Prompt user as long as they haven't given valid input.
-	while (!cin) {
+	bool asdf3 = true;
+	while (asdf3) {
 		try {
 			cout << "Move #1: ";
-			cin >> tempMove1;
+			getline(cin, tempMove1);
 			if (tempMove1 == "q" or tempMove1 == "Q") {
 				tempMove1 = "Struggle";
 				tempMove2 = "Struggle";
 				tempMove3 = "Struggle";
 				tempMove4 = "Struggle";
 				break;
+			} else {
+				for (const Move &x : move_db) {
+					if (isdigit(tempMove1.at(0)) and stoi(tempMove1) == x.index) {
+						asdf3 = false;
+						break;
+					} else {
+						asdf3 = false;
+						break;
+					}
+				}
 			}
 			cout << "Move #2: ";
-			cin >> tempMove2;
+			getline(cin, tempMove2);
 			if (tempMove2 == "q" or tempMove2 == "Q") {
 				tempMove2 = "Struggle";
 				tempMove3 = "Struggle";
 				tempMove4 = "Struggle";
 				break;
+			} else {
+				for (const Move &x : move_db) {
+					if (isdigit(tempMove2.at(0)) and stoi(tempMove2) == x.index) {
+						asdf3 = false;
+						break;
+					} else {
+						asdf3 = false;
+						break;
+					}
+				}
 			}
 			cout << "Move #3: ";
-			cin >> tmpMove3;
+			getline(cin, tempMove3);
 			if (tempMove3 == "q" or tempMove3 == "Q") {
 				tempMove3 = "Struggle";
 				tempMove4 = "Struggle";
 				break;
+			} else {
+				for (const Move &x : move_db) {
+					if (isdigit(tempMove3.at(0)) and stoi(tempMove3) == x.index) {
+						asdf3 = false;
+						break;
+					} else {
+						asdf3 = false;
+						break;
+					}
+				}
 			}
 			cout << "Move #4: ";
-			cin >> tempMove4;
+			getline(cin, tempMove4);
 			if (tempMove4 == "q" or tempMove4 == "Q") {
 				tempMove4 = "Struggle";
 				break;
+			} else {
+				for (const Move &x : move_db) {
+					if (isdigit(tempMove4.at(0)) and stoi(tempMove4) == x.index) {
+						asdf3 = false;
+						break;
+					} else {
+						asdf3 = false;
+						break;
+					}
+				}
 			}
 		} catch (...) {
 			cout << "ERROR: Invalid name or index." << endl;
+			cin.clear();
 		}
 	}
-	//If they used an index, assign stats based off index of move, otherwise assign stats based off name of name. (For all 4 moves.)
+	//If they used an index, assign stats based off index of move, otherwise assign stats based off name. (For all 4 moves.)
 	//Move 1
-	if (isdigit(tempMove1.at(0))) userMove1 = moves_db.find(stoi(tempMove1));
-	else userMove1 = moves_db.find(tempMove1);
+	if (isdigit(tempMove1.at(0))) {
+		int intTempMove1 = stoi(tempMove1);
+		for (const Move &x : move_db) {
+			if (x.index == intTempMove1) {
+				userMove1.index = x.index;
+				userMove1.name = x.name;
+				userMove1.type = x.type;
+				userMove1.category = x.category;
+				userMove1.PP = x.PP;
+				userMove1.power = x.power;
+				userMove1.accuracy = x.accuracy;
+			}
+		}
+	} else {
+		for (const Move &x : move_db) {
+			if (x.name == tempMove1) {
+				userMove1.index = x.index;
+				userMove1.name = x.name;
+				userMove1.type = x.type;
+				userMove1.category = x.category;
+				userMove1.PP = x.PP;
+				userMove1.power = x.power;
+				userMove1.accuracy = x.accuracy;
+			}
+		}
+	}
 	userMoves.push_back(userMove1);
 	//Move 2
-	if (isdigit(tempMove2.at(0))) userMove2 = moves_db.find(stoi(tempMove2));
-	else userMove2 = moves_db.find(tempMove2);
+	if (isdigit(tempMove2.at(0))) {
+		int intTempMove2 = stoi(tempMove2);
+		for (const Move &x : move_db) {
+			if (x.index == intTempMove2) {
+				userMove2.index = x.index;
+				userMove2.name = x.name;
+				userMove2.type = x.type;
+				userMove2.category = x.category;
+				userMove2.PP = x.PP;
+				userMove2.power = x.power;
+				userMove2.accuracy = x.accuracy;
+			}
+		}
+	} else {
+		for (const Move &x : move_db) {
+			if (x.name == tempMove2) {
+				userMove2.index = x.index;
+				userMove2.name = x.name;
+				userMove2.type = x.type;
+				userMove2.category = x.category;
+				userMove2.PP = x.PP;
+				userMove2.power = x.power;
+				userMove2.accuracy = x.accuracy;
+			}
+		}
+	}
 	userMoves.push_back(userMove2);
 	//Move 3
-	if (isdigit(tempMove3.at(0))) userMove3 = moves_db.find(stoi(tempMove3));
-	else userMove3 = moves_db.find(tempMove3);
+	if (isdigit(tempMove3.at(0))) {
+		int intTempMove3 = stoi(tempMove3);
+		for (const Move &x : move_db) {
+			if (x.index == intTempMove3) {
+				userMove3.index = x.index;
+				userMove3.name = x.name;
+				userMove3.type = x.type;
+				userMove3.category = x.category;
+				userMove3.PP = x.PP;
+				userMove3.power = x.power;
+				userMove3.accuracy = x.accuracy;
+			}
+		}
+	} else {
+		for (const Move &x : move_db) {
+			if (x.name == tempMove3) {
+				userMove3.index = x.index;
+				userMove3.name = x.name;
+				userMove3.type = x.type;
+				userMove3.category = x.category;
+				userMove3.PP = x.PP;
+				userMove3.power = x.power;
+				userMove3.accuracy = x.accuracy;
+			}
+		}
+	}
 	userMoves.push_back(userMove3);
 	//Move 4
-	if (isdigit(tempMove4.at(0))) userMove4 = moves_db.find(stoi(tempMove)4);
-	else userMove4 = moves_db.find(tempMove4);
+	if (isdigit(tempMove4.at(0))) {
+		int intTempMove4 = stoi(tempMove4);
+		for (const Move &x : move_db) {
+			if (x.index == intTempMove4) {
+				userMove4.index = x.index;
+				userMove4.name = x.name;
+				userMove4.type = x.type;
+				userMove4.category = x.category;
+				userMove4.PP = x.PP;
+				userMove4.power = x.power;
+				userMove4.accuracy = x.accuracy;
+			}
+		}
+	} else {
+		for (const Move &x : move_db) {
+			if (x.name == tempMove4) {
+				userMove4.index = x.index;
+				userMove4.name = x.name;
+				userMove4.type = x.type;
+				userMove4.category = x.category;
+				userMove4.PP = x.PP;
+				userMove4.power = x.power;
+				userMove4.accuracy = x.accuracy;
+			}
+		}
+	}
 	userMoves.push_back(userMove4);
 
 	//Gets enemy pokemon.
 	//Prompt user as long as they haven't given valid input.
-	while (!cin) {
+	bool asdf2 = true;
+	while (asdf2) {
 		try {
-			cout << "Choose a pokemon to fight using name or index: ";
-			cin >> enemyTemp;
+			//FIXME: Throws before user types anything in (first time only).
+			cout << "Choose a pokemon by name or index to fight against: ";
+			getline(cin, enemyTemp);
+			for (const Pokemon &x : pokemon_db) {
+				if (isdigit(enemyTemp.at(0)) and stoi(enemyTemp) == x.index) {
+					asdf2 = false;
+					break;
+				} else if (enemyTemp == x.name) {
+					asdf2 = false;
+					break;
+				}
+			}
 		} catch (...) {
 			cout << "ERROR: Invalid name or index." << endl;
+			cin.clear();
 		}
 	}
 	//If they used an index, assign stats for enemy pokemon based off index.
 	if (isdigit(enemyTemp.at(0))) {
-		enemyTemp = stoi(enemyTemp);
-		enemyPokemon = pokemon_db.find(enemyTemp);
+		int intEnemyTemp = stoi(enemyTemp);
+		for (const Pokemon &x : pokemon_db) {
+			if (x.index == intEnemyTemp) {
+				enemyPokemon.index = x.index;
+				enemyPokemon.name = x.name;
+				enemyPokemon.hp = x.hp;
+				enemyPokemon.attack = x.attack;
+				enemyPokemon.defense = x.defense;
+				enemyPokemon.speed = x.speed;
+				enemyPokemon.special = x.special;
+				enemyPokemon.type1 = x.type1;
+				enemyPokemon.type2 = x.type2;
+			}
+		}
 	}
 	//Else if they used a name, assign stats for enemy pokemon based off name.
-	else enemyPokemon = pokemon_db.find(enemyTemp);
+	else {
+		for (const Pokemon &x : pokemon_db) {
+			if (x.name == enemyTemp) {
+				enemyPokemon.index = x.index;
+				enemyPokemon.name = x.name;
+				enemyPokemon.hp = x.hp;
+				enemyPokemon.attack = x.attack;
+				enemyPokemon.defense = x.defense;
+				enemyPokemon.speed = x.speed;
+				enemyPokemon.special = x.special;
+				enemyPokemon.type1 = x.type1;
+				enemyPokemon.type2 = x.type2;
+			}
+		}
+	}
 
 	//Gets moves for enemy's pokemon.
 	cout << "Choose up to 4 moves for the enemy pokemon using name or index (press Q when done):" << endl;
 	//Prompt user as long as they haven't given valid input.
-	while (!cin) {
+	bool asdf4 = true;
+	while (asdf4) {
 		try {
 			cout << "Move #1: ";
 			cin >> tempEnemyMove1;
@@ -273,6 +489,16 @@ void battle_mode() {
 				tempEnemyMove3 = "Struggle";
 				tempEnemyMove4 = "Struggle";
 				break;
+			} else {
+				for (const Move &x : move_db) {
+					if (isdigit(tempEnemyMove1.at(0)) and stoi(tempEnemyMove1) == x.index) {
+						asdf4 = false;
+						break;
+					} else {
+						asdf4 = false;
+						break;
+					}
+				}
 			}
 			cout << "Move #2: ";
 			cin >> tempEnemyMove2;
@@ -281,6 +507,16 @@ void battle_mode() {
 				tempEnemyMove3 = "Struggle";
 				tempEnemyMove4 = "Struggle";
 				break;
+			} else {
+				for (const Move &x : move_db) {
+					if (isdigit(tempEnemyMove2.at(0)) and stoi(tempEnemyMove2) == x.index) {
+						asdf4 = false;
+						break;
+					} else {
+						asdf4 = false;
+						break;
+					}
+				}
 			}
 			cout << "Move #3: ";
 			cin >> tempEnemyMove3;
@@ -288,34 +524,153 @@ void battle_mode() {
 				tempEnemyMove3 = "Struggle";
 				tempEnemyMove4 = "Struggle";
 				break;
+			} else {
+				for (const Move &x : move_db) {
+					if (isdigit(tempEnemyMove3.at(0)) and stoi(tempEnemyMove3) == x.index) {
+						asdf4 = false;
+						break;
+					} else {
+						asdf4 = false;
+						break;
+					}
+				}
 			}
 			cout << "Move #4: ";
 			cin >> tempEnemyMove4;
 			if (tempEnemyMove4 == "q" or tempEnemyMove4 == "Q") {
 				tempEnemyMove4 = "Struggle";
 				break;
+			} else {
+				for (const Move &x : move_db) {
+					if (isdigit(tempEnemyMove4.at(0)) and stoi(tempEnemyMove4) == x.index) {
+						asdf4 = false;
+						break;
+					} else {
+						asdf4 = false;
+						break;
+					}
+				}
 			}
 		} catch (...) {
 			cout << "ERROR: Invalid name or index." << endl;
+			cin.clear();
 		}
 	}
-	//If they used an index, assign stats based off index of move, otherwise assign stats based off name of name. (For all 4 moves.)
+	//If they used an index, assign stats based off index of move, otherwise assign stats based off name. (For all 4 moves.)
 	//Move 1
-	if (isdigit(tempEnemyMove1.at(0))) enemyMove1 = moves_db.find(stoi(tempEnemyMove1));
-	else enemyMove1 = moves_db.find(tempEnemyMove1);
+	if (isdigit(tempEnemyMove1.at(0))) {
+		int intTempEnemyMove1 = stoi(tempEnemyMove1);
+		for (const Move &x : move_db) {
+			if (x.index == intTempEnemyMove1) {
+				enemyMove1.index = x.index;
+				enemyMove1.name = x.name;
+				enemyMove1.type = x.type;
+				enemyMove1.category = x.category;
+				enemyMove1.PP = x.PP;
+				enemyMove1.power = x.power;
+				enemyMove1.accuracy = x.accuracy;
+			}
+		}
+	} else {
+		for (const Move &x : move_db) {
+			if (x.name == tempEnemyMove1) {
+				enemyMove1.index = x.index;
+				enemyMove1.name = x.name;
+				enemyMove1.type = x.type;
+				enemyMove1.category = x.category;
+				enemyMove1.PP = x.PP;
+				enemyMove1.power = x.power;
+				enemyMove1.accuracy = x.accuracy;
+			}
+		}
+	}
 	enemyMoves.push_back(enemyMove1);
 	//Move 2
-	if (isdigit(tempEnemyMove2.at(0))) enemyMove2 = moves_db.find(stoi(tempEnemyMove2));
-	else enemyMove2 = moves_db.find(tempEnemyMove2);
+	if (isdigit(tempEnemyMove2.at(0))) {
+		int intTempEnemyMove2 = stoi(tempEnemyMove2);
+		for (const Move &x : move_db) {
+			if (x.index == intTempEnemyMove2) {
+				enemyMove2.index = x.index;
+				enemyMove2.name = x.name;
+				enemyMove2.type = x.type;
+				enemyMove2.category = x.category;
+				enemyMove2.PP = x.PP;
+				enemyMove2.power = x.power;
+				enemyMove2.accuracy = x.accuracy;
+			}
+		}
+	} else {
+		for (const Move &x : move_db) {
+			if (x.name == tempEnemyMove2) {
+				enemyMove2.index = x.index;
+				enemyMove2.name = x.name;
+				enemyMove2.type = x.type;
+				enemyMove2.category = x.category;
+				enemyMove2.PP = x.PP;
+				enemyMove2.power = x.power;
+				enemyMove2.accuracy = x.accuracy;
+			}
+		}
+	}
 	enemyMoves.push_back(enemyMove2);
 	//Move 3
-	if (isdigit(tempEnemyMove3.at(0))) enemyMove3 = moves_db.find(stoi(tempEnemyMove3));
-	else enemyMove3 = moves_db.find(tempEnemyMove3);
+	if (isdigit(tempEnemyMove3.at(0))) {
+		int intTempEnemyMove3 = stoi(tempEnemyMove3);
+		for (const Move &x : move_db) {
+			if (x.index == intTempEnemyMove3) {
+				enemyMove3.index = x.index;
+				enemyMove3.name = x.name;
+				enemyMove3.type = x.type;
+				enemyMove3.category = x.category;
+				enemyMove3.PP = x.PP;
+				enemyMove3.power = x.power;
+				enemyMove3.accuracy = x.accuracy;
+			}
+		}
+	} else {
+		for (const Move &x : move_db) {
+			if (x.name == tempEnemyMove3) {
+				enemyMove3.index = x.index;
+				enemyMove3.name = x.name;
+				enemyMove3.type = x.type;
+				enemyMove3.category = x.category;
+				enemyMove3.PP = x.PP;
+				enemyMove3.power = x.power;
+				enemyMove3.accuracy = x.accuracy;
+			}
+		}
+	}
 	enemyMoves.push_back(enemyMove3);
 	//Move 4
-	if (isdigit(tempEnemyMove4.at(0))) enemyMove4 = moves_db.find(stoi(tempEnemyMove4));
-	else enemyMove4 = moves_db.find(tempEnemyMove4);
+	if (isdigit(tempEnemyMove4.at(0))) {
+		int intTempEnemyMove4 = stoi(tempEnemyMove4);
+		for (const Move &x : move_db) {
+			if (x.index == intTempEnemyMove4) {
+				enemyMove4.index = x.index;
+				enemyMove4.name = x.name;
+				enemyMove4.type = x.type;
+				enemyMove4.category = x.category;
+				enemyMove4.PP = x.PP;
+				enemyMove4.power = x.power;
+				enemyMove4.accuracy = x.accuracy;
+			}
+		}
+	} else {
+		for (const Move &x : move_db) {
+			if (x.name == tempEnemyMove4) {
+				enemyMove4.index = x.index;
+				enemyMove4.name = x.name;
+				enemyMove4.type = x.type;
+				enemyMove4.category = x.category;
+				enemyMove4.PP = x.PP;
+				enemyMove4.power = x.power;
+				enemyMove4.accuracy = x.accuracy;
+			}
+		}
+	}
 	enemyMoves.push_back(enemyMove4);
+
+	//Lets get to fighting these pokemon like they're rabbid dogs!
 
 	map<string, int> m;
 	m["Normal"] = 0;
@@ -337,74 +692,98 @@ void battle_mode() {
 	m["Dark"] = 16;
 	m["Fairy"] = 17;
 
-	//Lets get to fighting these pokemon like they're rabbid dogs!
-
-	//If userPokemon's speed and enemyPokemon's speed are the same, roll a dice.
-	int diceRoll = -1;
-	if (userPokemon.speed == enemyPokemon.speed) {
-		diceRoll = rand() % 2;
-	}
-
-	//If user's pokemon's speed is higher or the dice rolled a 1, they go first.
-	if (userPokemon.speed > enemyPokemon.speed or diceRoll == 1) {
-		string userChoice;
-		int damageDealt = 0;
-		double stab = 0, typeMod = 0;
-		while (userPokemon.hp > 0 or enemyPokemon.hp > 0) {
-			//Give user choice of what move to attack with.
-			cout << "Choose a move for you to use: " << endl << userMove1 << endl << userMove2 << endl << userMove3 << endl << userMove4 << endl;
-			cin >> userChoice;
-
-			Pokemon userPower.power = 0;
-			if (userMoves.find(userChoice)) userPower.power = userMoves.find(userChoice);
-			//TODO: STAB AND TYPE MODIFIER
-			//if (userPokemon.type == userMoves.at(something.type)) stab = 1.5;
-			//else stab = 1.0;
-			//if (something something type_modifier) ;
-			
-			//Calculate damage dealt then substract that from enemy pokemon's health.
-			damageDealt = (userPower * userPokemon.attack) / (enemyPokemon.defense * /*STAB*/ * /*type_modifier*/);
-			enemyPokemon.hp -= damageDealt;
-
-			cout << "You dealt " << damageDealt << " , resulting in " << enemyPokemon.name << "'s HP being " << enemyPokemon.hp << endl << endl;
-
-			//Give user choice of what move to attack with.
-			cout << "Choose a move for the enemy to use: " << endl << enemyMove1 << endl << enemyMove2 << endl << enemyMove3 << endl << enemyMove4 << endl;
-			cin >> userChoice;
-
-			Pokemon enemyPower.power = 0;
-			if (enemyMoves.find(userChoice)) enemyPower.power = enemyMoves.find(userChoice);
-			//TODO: STAB AND TYPE MODIFIER
-			//if (enemyPokemon.type == userMoves.at(something.type)) stab = 1.5;
-			//else stab = 1.0;
-			//if (something something type_modifier) ;
-			
-			//Calculate damage dealt then substract that from user pokemon's health.
-			damageDealt = (enemyPower * enemyPokemon.attack) / (userPokemon.defense * /*STAB*/ * /*type_modifier*/);
-			userPokemon.hp -= damageDealt;
-
-			cout << "The enemy dealt " << damageDealt << " , resulting in " << userPokemon.name << "'s HP being " << userPokemon.hp << endl; << endl;
-		}
-	}
-	//Else if the enemyPokemon speed is higher or the dice rolled a 0, they go first.
-	else if (enemyPokemon.speed > userPokemon.speed or diceRoll == 0) {
-		while (userPokemon.hp > 0 or enemyPokemon.hp > 0) {
-			//TODO: Copy and paste above once finished, and switch order so that enemy pokemon attacks first.
+	//Load a 2d vector with the type modifiers.
+	//TODO: Need to initialize vector as 9 by 9.
+	vector<vector<double>> type_mods;
+	ifstream ins("type_system.txt");
+	string tempContentsLine, temp;
+	for (int i = 0; i < 18; i++) {
+		getline(ins, tempContentsLine);
+		stringstream ssContents(tempContentsLine);
+		for (int j = 0; j < 18; j++) {
+			getline(ssContents, temp, '\t');
+			type_mods.at(i).at(j) = stod(temp);
 		}
 	}
 
+	//FIXME
+	for (int i = 0; i < 18; i++) {
+		for (int j = 0; j < 18; j++) {
+			cout << type_mods.at(i).at(j) << "\t";
+		}
+		cout << endl;
+	}
 
-	/*	cout << "Do you want to look up a pokemon? (y for yes)" << endl;
-		cin >> userInput;
-		while (userInput == "y") {
-			//This is how you look up which row/col the type is
-			cout << "Please enter a type:\n";
-			string s;
-			cin >> s;
-			cout << "Its row/col is: " << m[s] << endl;
+	//FIXME
+	exit(1);
+	/*
+		//If userPokemon's speed and enemyPokemon's speed are the same, roll a dice.
+		int diceRoll = -1;
+		if (userPokemon.speed == enemyPokemon.speed) {
+			diceRoll = rand() % 2;
+		}
+
+		//If user's pokemon's speed is higher or the dice rolled a 1, they go first.
+		if (userPokemon.speed > enemyPokemon.speed or diceRoll == 1) {
+			string userChoice;
+			int damageDealt = 0;
+			double stab = 0, typeMod = 0;
+			while (userPokemon.hp > 0 or enemyPokemon.hp > 0) {
+				//Give user choice of what move to attack with.
+				cout << "Choose a move for you to use: " << endl << userMove1 << endl << userMove2 << endl << userMove3 << endl << userMove4 << endl;
+				cin >> userChoice;
+
+				Pokemon userPower.power = 0;
+				if (userMoves.find(userChoice)) userPower.power = userMoves.find(userChoice);
+				//TODO: STAB AND TYPE MODIFIER
+				//if (userPokemon.type == userMoves.at(something.type)) stab = 1.5;
+				//else stab = 1.0;
+				//if (something something type_modifier) ;
+
+				//Calculate damage dealt then substract that from enemy pokemon's health.
+				damageDealt = (userPower * userPokemon.attack) / (enemyPokemon.defense * STAB * type_modifier);
+				enemyPokemon.hp -= damageDealt;
+
+				cout << "You dealt " << damageDealt << " , resulting in " << enemyPokemon.name << "'s HP being " << enemyPokemon.hp << endl << endl;
+
+				//Give user choice of what move to attack with.
+				cout << "Choose a move for the enemy to use: " << endl << enemyMove1 << endl << enemyMove2 << endl << enemyMove3 << endl << enemyMove4 << endl;
+				cin >> userChoice;
+
+				Pokemon enemyPower.power = 0;
+				if (enemyMoves.find(userChoice)) enemyPower.power = enemyMoves.find(userChoice);
+				//TODO: STAB AND TYPE MODIFIER
+				//if (enemyPokemon.type == userMoves.at(something.type)) stab = 1.5;
+				//else stab = 1.0;
+				//if (something something type_modifier) ;
+
+				//Calculate damage dealt then substract that from user pokemon's health.
+				damageDealt = (enemyPower * enemyPokemon.attack) / (userPokemon.defense * STAB * type_modifier);
+				userPokemon.hp -= damageDealt;
+
+				cout << "The enemy dealt " << damageDealt << " , resulting in " << userPokemon.name << "'s HP being " << userPokemon.hp << endl;
+				        << endl;
+			}
+		}
+		//Else if the enemyPokemon speed is higher or the dice rolled a 0, they go first.
+		else if (enemyPokemon.speed > userPokemon.speed or diceRoll == 0) {
+			while (userPokemon.hp > 0 or enemyPokemon.hp > 0) {
+				//TODO: Copy and paste above once finished, and switch order so that enemy pokemon attacks first.
+			}
+		}
+
+
 			cout << "Do you want to look up a pokemon? (y for yes)" << endl;
 			cin >> userInput;
-		} */
+			while (userInput == "y") {
+				//This is how you look up which row/col the type is
+				cout << "Please enter a type:\n";
+				string s;
+				cin >> s;
+				cout << "Its row/col is: " << m[s] << endl;
+				cout << "Do you want to look up a pokemon? (y for yes)" << endl;
+				cin >> userInput;
+			} */
 
 
 
